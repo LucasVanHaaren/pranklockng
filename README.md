@@ -1,16 +1,15 @@
-# pranklock
+# pranklockng
 
-[![CircleCI](https://circleci.com/gh/RealOrangeOne/pranklock.svg?style=svg)](https://circleci.com/gh/RealOrangeOne/pranklock)
+Based on RealOrangeOne's [prankclock](https://github.com/RealOrangeOne/pranklock), which is based on the original work of [@Adimote](https://github.com/adimote) in [this version](https://github.com/trickeydan/dotfiles-ubuntu/blob/master/files/desktop/i3/pranklock.sh).
 
-Based on the original work of [@Adimote](https://github.com/adimote) in [this version](https://github.com/trickeydan/dotfiles-ubuntu/blob/master/files/desktop/i3/pranklock.sh).
-
-Locks the screen with a screenshot of the desktop. If any key is pressed, or the mouse moves, capture an image with the webcam, and lock the screen again using that.
+Locks the screen with a screenshot of the desktop. If any key is pressed, or the mouse moves, display a meme and capture both an image and a video with the webcam, and lock the screen again using that meme.
 
 ## Dependencies
 
 - `i3lock`
 - `ffmpeg`
 - `xdotool`
+- some good memes (default memes included)
 
 ## Usage
 
