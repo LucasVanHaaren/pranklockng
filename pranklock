@@ -1,21 +1,27 @@
 #!/usr/bin/env bash
 
+# Forked pranklock by vhash and zeub13
 # See https://github.com/RealOrangeOne/pranklock
+# Prank your firend by showing a meme when touching computer while locked
+# and capture and save both photo and video at this time.
 
+# Escape key used to exit lockscreen whitout been pranked
 ESCAPE_KEY=9
-TEMP_FILE=$(mktemp -t "XXXXXXXXXX.png")
-VIDEO_DEV=${1:-/dev/video0}
 
-if [ ! -e "$VIDEO_DEV" ]; then
-    xdotool key "Super_L+l"
-    exit
-fi
+TEMP_FILE_PHOTO=$(mktemp -t "XXXXXXXXXX.png")
+TEMP_FILE_VIDEO=$(mktemp -t "XXXXXXXXXX.mkv")
+VIDEO_DEV=${1:-/dev/video0}
+MEME_FILE="/opt/pranklock/you_got_pranked_yoda.png"
+
+# Take picture and video of the pranked guy, saving it on local filesystem
+capture_pranked_guy () {
+    ffmpeg -f video4linux2 -video_size hd720 -i "$VIDEO_DEV" -y -vf "scale=$screensize" -frames 1 "$TEMP_FILE_PHOTO"
+    ffmpeg -f v4l2 -framerate 60 -video_size 1920x1080 -t 00:00:05 -i "$VIDEO_DEV" -y -vf "scale=$screensize" "$TEMP_FILE_VIDEO"
+}
 
 screensize=$(xdpyinfo | grep -i dimensions: | sed 's/[^0-9]*pixels.*(.*).*//' | sed 's/[^0-9x]*//')
-
-ffmpeg -y -f x11grab -s "$screensize" -i "$DISPLAY" -vframes 1 "$TEMP_FILE"
-
-i3lock -i "$TEMP_FILE" -p default &
+ffmpeg -y -f x11grab -s "$screensize" -i "$DISPLAY" -vframes 1 "$TEMP_FILE_PHOTO"
+i3lock -i "$TEMP_FILE_PHOTO" -p default &
 
 key=0
 while read -r line
@@ -26,10 +32,10 @@ do
     fi
 done < <(xinput test-xi2 --root)
 
+# When input is recieved but is not the escape key
 if [[ "$key" -ne "$ESCAPE_KEY" ]]; then
-    ffmpeg -f video4linux2 -video_size hd720 -i "$VIDEO_DEV" -y -vf "scale=$screensize" -frames 1 "$TEMP_FILE"
     killall i3lock
-    i3lock -i "$TEMP_FILE"
+    i3lock -i "$MEME_FILE"
+    capture_pranked_guy
 fi
 
-rm -f "$TEMP_FILE"
