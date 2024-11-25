@@ -30,3 +30,4 @@ if [[ "$key" -ne "$ESCAPE_KEY" ]]; then
     swaylock -i "$MEME_FILE"
 fi
 
+rm $TEMP_FILE_PHOTO
